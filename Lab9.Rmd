@@ -1,0 +1,98 @@
+---
+Assignment 9
+Spencer Krichevsky
+---
+```{r}
+# Question 1. Submit your solution for the Problem 1 from Activity 9.
+
+odd_count <- function(x){
+  odd_num <- 0
+  for(i in 1:length(x)){
+    if(x[i]%%2==1){
+      odd_num <- odd_num + 1
+    }
+  }
+  return(odd_num)
+}
+
+vec_odd_count <- function(x){
+  odd_num <- sum(x%%2==1)
+  return(odd_num)
+}
+microbenchmark::microbenchmark(odd_count(1:100),vec_odd_count(1:100))
+```
+
+```{r}
+# Question 2. Modify the sorting function (sort_vec) from "Assignment 8" (problem 3) so that it should take an additional argument ascending which causes sorting in increasing when ascending=TRUE.
+
+sort_vec <- function(x, ascending){
+  if(length(x)<2){
+    return(x)
+  }
+  if(ascending==TRUE){
+    for(last in length(x):2){
+      for(first in 1:(last-1)){
+        if(x[first] > x[first+1]){
+          temp <- x[first]
+          x[first] <- x[first+1]
+          x[first+1] <- temp
+        }
+      }
+    }
+    return(x)
+  }
+  if(ascending==FALSE){
+    for(last in length(x):2){
+      for(first in 1:(last-1)){
+        # Swapping the if statement allows for descending sorting
+        if(x[first] < x[first+1]){
+          temp <- x[first]
+          x[first] <- x[first+1]
+          x[first+1] <- temp
+        }
+      }
+    }
+    return(x)
+  }
+}
+
+sort_vec(c(7,3,2,1,8), TRUE)
+sort_vec(c(7,3,2,1,8), FALSE)
+```
+
+```{r}
+# Question 3. Consider a simple random walk with starting point 0 and a step -1 or 1. Below is the code with dynamically allocated memory. Write your code with preallocated memory and compare time for both versions using system.time() function (use N=1000, 10000, 1000000)
+
+set.seed(123)
+
+N <- 1000
+data_series <- 0
+system.time({for(i in 2:N){
+  data_series[i] <- data_series[i-1] + sample(c(-1, 1), 1)
+}})
+
+data_series_vec <- vector(length=1000)
+system.time({for(i in 2:N){
+  data_series_vec[i] <- data_series_vec[i-1] + sample(c(-1, 1), 1)}})
+
+
+N1 <- 10000
+data_series_1 <- 0
+system.time({for(i in 2:N1){
+  data_series_1[i] <- data_series_1[i-1] + sample(c(-1, 1), 1)
+}})
+
+data_series_vec_1 <- vector(length=10000)
+system.time({for(i in 2:N1){
+  data_series_vec_1[i] <- data_series_vec_1[i-1] + sample(c(-1, 1), 1)}})
+
+N2 <- 1000000
+data_series_2 <- 0
+system.time({for(i in 2:N2){
+  data_series_2[i] <- data_series_2[i-1] + sample(c(-1, 1), 1)
+}})
+
+data_series_vec_2 <- vector(length=1000000)
+system.time({for(i in 2:N1){
+  data_series_vec_2[i] <- data_series_vec_2[i-1] + sample(c(-1, 1), 1)}})
+```
